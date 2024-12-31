@@ -1,0 +1,932 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+//  Project Title: Network Calculator
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <io.h>
+#include <dos.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <sstream>
+#include <stdio.h>
+#include <iomanip>
+#include <istream>
+#include <math.h>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+class net2024 {
+
+	int n1; // matrix size x
+	int n2; // matrix size y
+
+public:
+
+	int getNofDataX(void) { return this->n1; };
+
+	int getNofDataY(void) { return this->n2; };
+
+	void setNofDataX(int x) { this->n1 = x; };
+
+	void setNofDataY(int y) { this->n2 = y; };
+
+public:
+
+	struct data {
+
+		double** X1; // pointer to the matrix entry 
+
+		double** X2; // pointer to the matrix entry
+
+		double** Weights_1; // pointer to the matrix entry
+
+		double** Weights_2; // pointer to the matrix entry
+
+		double** X1_convolved_1; // pointer to the matrix entry
+
+		double** X2_convolved_1; // pointer to the matrix entry
+
+		double** X1_convolved_2; // pointer to the matrix entry
+
+		double** X2_convolved_2; // pointer to the matrix entry
+
+		double** X1_original; // pointer to the matrix entry
+
+		double** X2_original; // pointer to the matrix entry
+
+		double** pWeights_1; // pointer to the matrix entry
+
+		double** pWeights_2; // pointer to the matrix entry
+
+	}*pointer; // pointer to the matrices
+
+public:
+
+	net2024(int x, int y) : n1(x), n2(y) { pointer = 0; };// constructor 
+
+	void allocateData();
+
+	void save();
+
+	~net2024() { } // destructor
+
+};
+
+void net2024::allocateData() { // allocate data
+
+
+	// (1) allocate struct 'data' (begin)
+	pointer = new data;
+
+	pointer->X1 = new double* [this->n2];
+
+	pointer->X2 = new double* [this->n2];
+
+	pointer->Weights_1 = new double* [this->n2];
+
+	pointer->Weights_2 = new double* [this->n2];
+
+	pointer->X1_convolved_1 = new double* [this->n2];
+
+	pointer->X2_convolved_1 = new double* [this->n2];
+
+	pointer->X1_convolved_2 = new double* [this->n2];
+
+	pointer->X2_convolved_2 = new double* [this->n2];
+
+	pointer->X1_original = new double* [this->n2];
+
+	pointer->X2_original = new double* [this->n2];
+
+	pointer->pWeights_1 = new double* [this->n2];
+
+	pointer->pWeights_2 = new double* [this->n2];
+
+
+	for (int v = 0; v < this->n2; v++) { // (1)
+
+		pointer->X1[v] = new double[this->n1];
+
+		pointer->X2[v] = new double[this->n1];
+
+		pointer->Weights_1[v] = new double[this->n1];
+
+		pointer->Weights_2[v] = new double[this->n1];
+
+		pointer->X1_convolved_1[v] = new double[this->n1];
+
+		pointer->X2_convolved_1[v] = new double[this->n1];
+
+		pointer->X1_convolved_2[v] = new double[this->n1];
+
+		pointer->X2_convolved_2[v] = new double[this->n1];
+
+		pointer->X1_original[v] = new double[this->n1];
+
+		pointer->X2_original[v] = new double[this->n1];
+
+		pointer->pWeights_1[v] = new double[this->n1];
+
+		pointer->pWeights_2[v] = new double[this->n1];
+
+	} // (1) allocate struct 'data' (end)
+
+
+	  // (2) initialize (begin)
+	for (int v = 0; v < this->n2; v++) { // (a)
+
+		for (int f = 0; f < this->n1; f++) { // (b)
+
+			pointer->X1[v][f] = (double)0.0;
+
+			pointer->X2[v][f] = (double)0.0;
+
+			pointer->Weights_1[v][f] = (double)0.0;
+
+			pointer->Weights_2[v][f] = (double)0.0;
+
+			pointer->X1_convolved_1[v][f] = (double)0.0;
+
+			pointer->X2_convolved_1[v][f] = (double)0.0;
+
+			pointer->X1_convolved_2[v][f] = (double)0.0;
+
+			pointer->X2_convolved_2[v][f] = (double)0.0;
+
+			pointer->X1_original[v][f] = (double)0.0;
+
+			pointer->X2_original[v][f] = (double)0.0;
+
+			pointer->pWeights_1[v][f] = (double)0.0;
+
+			pointer->pWeights_2[v][f] = (double)0.0;
+
+		} //(b)
+
+	} //(a)
+   // (2) initialize (end)
+
+} // allocate data
+
+
+void net2024::save() { // saveData
+
+	FILE* savedata;
+	char outputFile[128];
+
+	sprintf(outputFile, "%s", "Weights_1.img");
+	if ((savedata = fopen(outputFile, "wb+")) == NULL)
+	{
+
+		std::cout << "Cannot open output file, Now Exit..." << endl;
+
+	}
+	else { // (save)
+
+
+		for (int v = 0; v < this->n2; v++) { // (a)
+
+			for (int f = 0; f < this->n1; f++)
+
+				fwrite(&pointer->Weights_1[v][f], sizeof(double), 1, savedata);
+
+		} // (a)
+
+		fclose(savedata);
+
+	} // (save)
+
+	sprintf(outputFile, "%s", "Weights_2.img");
+	if ((savedata = fopen(outputFile, "wb+")) == NULL)
+	{
+
+		std::cout << "Cannot open output file, Now Exit..." << endl;
+
+	}
+	else { // (save)
+
+
+		for (int v = 0; v < this->n2; v++) { // (a)
+
+			for (int f = 0; f < this->n1; f++)
+
+				fwrite(&pointer->Weights_2[v][f], sizeof(double), 1, savedata);
+
+		} // (a)
+
+		fclose(savedata);
+
+	} // (save)
+
+	sprintf(outputFile, "%s", "X1_convolved_1.img");
+
+	if ((savedata = fopen(outputFile, "wb+")) == NULL)
+	{
+
+		std::cout << "Cannot open output file, Now Exit..." << endl;
+
+	}
+	else { // (save)
+
+
+		for (int v = 0; v < this->n2; v++) { // (a)
+
+			for (int f = 0; f < this->n1; f++)
+
+				fwrite(&pointer->X1_convolved_1[v][f], sizeof(double), 1, savedata);
+
+		} // (a)
+
+		fclose(savedata);
+
+	} // (save)
+
+
+	sprintf(outputFile, "%s", "X2_convolved_1.img");
+	if ((savedata = fopen(outputFile, "wb+")) == NULL)
+	{
+
+		std::cout << "Cannot open output file, Now Exit..." << endl;
+
+	}
+	else { // (save)
+
+
+		for (int v = 0; v < this->n2; v++) { // (a)
+
+			for (int f = 0; f < this->n1; f++)
+
+				fwrite(&pointer->X2_convolved_1[v][f], sizeof(double), 1, savedata);
+
+		} // (a)
+
+		fclose(savedata);
+
+	} // (save)
+
+
+	sprintf(outputFile, "%s", "X1_convolved_2.img");
+
+	if ((savedata = fopen(outputFile, "wb+")) == NULL)
+	{
+
+		std::cout << "Cannot open output file, Now Exit..." << endl;
+
+	}
+	else { // (save)
+
+
+		for (int v = 0; v < this->n2; v++) { // (a)
+
+			for (int f = 0; f < this->n1; f++)
+
+				fwrite(&pointer->X1_convolved_2[v][f], sizeof(double), 1, savedata);
+
+		} // (a)
+
+		fclose(savedata);
+
+	} // (save)
+
+
+	sprintf(outputFile, "%s", "X2_convolved_2.img");
+	if ((savedata = fopen(outputFile, "wb+")) == NULL)
+	{
+
+		std::cout << "Cannot open output file, Now Exit..." << endl;
+
+	}
+	else { // (save)
+
+
+		for (int v = 0; v < this->n2; v++) { // (a)
+
+			for (int f = 0; f < this->n1; f++)
+
+				fwrite(&pointer->X2_convolved_2[v][f], sizeof(double), 1, savedata);
+
+		} // (a)
+
+		fclose(savedata);
+
+	} // (save)
+
+} // saveData
+
+
+int main(int argc, char* argv[]) {
+
+	char outputFile[128] = "net2024.log";
+
+	FILE* savedata;
+
+	if (argc < 8) {
+		std::cout << endl;
+		std::cout << "Please type the image file name (Class X1)" << endl;
+		std::cout << "Please type the image file name (Class X2)" << endl;
+		std::cout << "Please make sure that the Data format is 'double': 64 bits real" << endl;
+		std::cout << "Please enter the number of pixels along the X direction (integer)" << endl;
+		std::cout << "Please enter the number of pixels along the Y direction (integer)" << endl;
+		std::cout << "Please enter the learning rate (double) in ]0, 0.99]" << endl;
+		std::cout << "Please enter the number of iterations (integer): 1000 maximum" << endl;
+		std::cout << "Please enter the smoothing factor (double) in ]0, 0.99]" << endl;
+		std::cout << endl;
+		exit(0);
+	}
+
+	else { // run the program (begin)
+
+
+		if ((savedata = fopen(outputFile, "w")) == NULL)
+		{
+
+			std::cout << "Cannot open output file, Now Exit..." << endl;
+
+		}
+		else { // processing (begin)
+
+			int n1 = atoi(argv[3]);
+			int n2 = atoi(argv[4]);
+
+			char fileNameX1[328];
+			char fileNameX2[328];
+
+			double learningRate = atof(argv[5]);
+			int nofIterations = atoi(argv[6]);
+			double smoothingFactor = atof(argv[7]);
+
+			sprintf(fileNameX1, "%s", argv[1]);
+			sprintf(fileNameX2, "%s", argv[2]);
+
+			std::cout << endl;
+			std::cout << "The File name is (Class X1): " << fileNameX1 << endl;
+			std::cout << "The File name is (Class X2): " << fileNameX2 << endl;
+			std::cout << "The number of pixels along the X direction is: " << atoi(argv[3]) << endl;
+			std::cout << "The number of pixels along the Y direction is: " << atoi(argv[4]) << endl;
+			std::cout << "The learning rate is: " << learningRate << endl;
+			std::cout << "The number of iterations is: " << atoi(argv[6]) << endl;
+			std::cout << "The smoothing factor is: " << smoothingFactor << endl;
+
+			fprintf(savedata, "%s%s\n", "The File name is (Class X1): ", fileNameX1);
+			fprintf(savedata, "%s%s\n", "The File name is (Class X2): ", fileNameX2);
+			fprintf(savedata, "%s%d\n", "The number of pixels along the X direction is: ", n1);
+			fprintf(savedata, "%s%d\n", "The number of pixels along the Y direction is: ", n2);
+			fprintf(savedata, "%s%lf\n", "The learning rate is: ", learningRate);
+			fprintf(savedata, "%s%d\n", "The number of iterations is: ", nofIterations);
+			fprintf(savedata, "%s%lf\n", "The smoothing factor is: ", smoothingFactor);
+
+			if ((double)learningRate <= 0.0 || (double)learningRate > 0.99)
+			{
+
+				std::cout << "Please enter the learning rate (double) in ]0, 0.99]" << endl;
+				exit(0);
+
+			}
+
+			if ((double)nofIterations <= 0 || (double)nofIterations > 1000)
+			{
+
+				std::cout << "Please enter the number of iterations (integer): 1000 maximum" << endl;
+				exit(0);
+
+			}
+
+			if ((double)smoothingFactor <= 0.0 || (double)smoothingFactor > 0.99)
+			{
+
+				std::cout << "Please enter the smoothing factor (double) in ]0, 0.99]" << endl;
+				exit(0);
+
+			}
+
+			net2024 Network(n1, n2);
+
+			Network.allocateData();
+
+			/// read image file (begin)
+			FILE* pf;
+
+			if ((pf = fopen(fileNameX1, "rb+")) == NULL)
+			{
+
+				std::cout << "Cannot open file: " << fileNameX1 << endl;
+				fprintf(savedata, "%s%s\n", "Cannot open file: ", fileNameX1);
+				Network.~net2024();
+				exit(0);
+
+			}
+			else { // else
+
+				double number;
+
+				for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+					for (int i2 = 0; i2 < n1; i2++) { // y dim
+
+						fread(&number, sizeof(double), 1, pf);
+
+						Network.pointer->X1_original[i1][i2] = (double)number;
+
+						Network.pointer->X1[i1][i2] = (double)number;
+
+					} // y dim
+
+				}  // x dim 
+
+
+				fclose(pf);
+
+
+			} // else 
+			/// read file (end)
+
+			if ((pf = fopen(fileNameX2, "rb+")) == NULL)
+			{
+
+				std::cout << "Cannot open file: " << fileNameX2 << endl;
+				fprintf(savedata, "%s%s\n", "Cannot open file: ", fileNameX2);
+				Network.~net2024();
+				exit(0);
+
+			}
+			else { // else
+
+				double number;
+
+				for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+					for (int i2 = 0; i2 < n1; i2++) { // y dim
+
+						fread(&number, sizeof(double), 1, pf);
+
+						Network.pointer->X2_original[i1][i2] = (double)number;
+
+						Network.pointer->X2[i1][i2] = (double)number;
+
+					} // y dim
+
+				}  // x dim 
+
+
+				fclose(pf);
+
+
+			} // else 
+			/// read file (end)
+
+			std::cout << "Data loaded" << endl;
+
+			double max = Network.pointer->X1[0][0];
+			double min = Network.pointer->X1[0][0];
+
+			/// compute max and min of data (begin)
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim
+
+					if (Network.pointer->X1[i1][i2] > (double)max)
+
+						max = (double)Network.pointer->X1[i1][i2];
+
+					if (Network.pointer->X1[i1][i2] < (double)min)
+
+						min = (double)Network.pointer->X1[i1][i2];
+
+
+				} // y dim
+
+			}  // x dim
+			/// compute max and min of data (end)
+
+			// scale (begin)
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim  
+
+					if (max == min) Network.pointer->X1[i1][i2] = (double)0.0;
+
+					else Network.pointer->X1[i1][i2] = (double)(min - Network.pointer->X1[i1][i2]) / (min - max);
+
+				} // y dim
+
+			}  // x dim 
+			// scale (end)
+
+			std::cout << "Data scaled (Class X1)" << endl;
+
+			max = Network.pointer->X2[0][0];
+			min = Network.pointer->X2[0][0];
+
+			/// compute max and min of data (begin)
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim
+
+					if (Network.pointer->X2[i1][i2] > (double)max)
+
+						max = (double)Network.pointer->X2[i1][i2];
+
+					if (Network.pointer->X2[i1][i2] < (double)min)
+
+						min = (double)Network.pointer->X2[i1][i2];
+
+
+				} // y dim
+
+			}  // x dim
+			/// compute max and min of data (end)
+
+			// scale (begin)
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim  
+
+					if (max == min) Network.pointer->X2[i1][i2] = (double)0.0;
+
+					else Network.pointer->X2[i1][i2] = (double)(min - Network.pointer->X2[i1][i2]) / (min - max);
+
+				} // y dim
+
+			}  // x dim 
+			// scale (end)
+
+			std::cout << "Data scaled (Class X2)" << endl;
+
+	
+	// initialize weigthing connections to zeros (begin)
+	double randomNumber = 0.0;
+
+	for (int i1=0; i1 < n2; i1++) {// x dim
+       	
+		for (int i2=0; i2 < n1; i2++) { // y dim  
+
+		Network.pointer->Weights_1[i1][i2] = (double) randomNumber;	
+
+		Network.pointer->Weights_2[i1][i2] = (double) randomNumber;	
+
+		Network.pointer->pWeights_1[i1][i2] = (double) randomNumber; 
+
+		Network.pointer->pWeights_2[i1][i2] = (double) randomNumber;
+
+		}
+	} 
+	
+			// initialize threshold logic units
+			double b1 = randomNumber;  
+			double b2 = randomNumber; 
+			double pb1 = randomNumber;
+			double pb2 = randomNumber;
+			// initialize weigthing connections to zeros (end)
+
+			double Y11 = 0.0, Y12 = 0.0;
+			double O11 = 0.0, O12 = 0.0;
+
+			double Y21 = 0.0, Y22 = 0.0;
+			double O21 = 0.0, O22 = 0.0;
+			double EofFit;
+
+			// learning process (begin)
+			for (int counter = 1; counter <= nofIterations; counter++)
+			{
+
+				EofFit = 0;
+
+				Y11 = 0;
+				Y21 = 0;
+				
+				// compute the Network output (begin)
+				for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+					for (int i2 = 0; i2 < n1; i2++) { // y dim  
+
+						Y11 += (double)Network.pointer->X1[i1][i2] * (double)Network.pointer->Weights_1[i1][i2];
+
+						Y21 += (double)Network.pointer->X2[i1][i2] * (double)Network.pointer->Weights_1[i1][i2];
+
+					}
+				}
+
+				Y11 -= (double)b1;
+				Y21 -= (double)b1;
+
+				Y12 = 0;
+				Y22 = 0;
+
+				// compute the Network output (begin)
+				for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+					for (int i2 = 0; i2 < n1; i2++) { // y dim  
+
+						Y12 += (double)Network.pointer->X1[i1][i2] * (double)Network.pointer->Weights_2[i1][i2];
+
+						Y22 += (double)Network.pointer->X2[i1][i2] * (double)Network.pointer->Weights_2[i1][i2];
+
+					}
+				}
+						
+
+				Y12 -= (double)b2;
+				Y22 -= (double)b2;
+
+				O11 = (double)1.0 / ((double)1.0 + (double)exp(-(double)Y11));
+				O21 = (double)1.0 / ((double)1.0 + (double)exp(-(double)Y21));
+
+				O12 = (double)1.0 / ((double)1.0 + (double)exp(-(double)Y12));
+				O22 = (double)1.0 / ((double)1.0 + (double)exp(-(double)Y22));
+
+				// compute the Network output (begin)		
+				std::cout << "O11 = " << O11 << endl;
+				std::cout << "O12 = " << O12 << endl;
+				// compute the Network output (end)
+
+				// compute the Network output (begin)
+				std::cout << "O21 = " << O21 << endl;
+				std::cout << "O22 = " << O22 << endl;
+				// compute the Network output (end)
+
+				double target11 = (double)1.0;
+				double target21 = (double)0.0;
+				double target12 = (double)0.0;
+				double target22 = (double)1.0;
+
+				// calculate the error of fit (begin)
+				EofFit = ((double)O11 - target11) * ((double)O11 - target11) + 
+					     ((double)O21 - target21) * ((double)O21 - target21) +
+					     ((double)O12 - target12) * ((double)O12 - target12) + 
+						 ((double)O22 - target22) * ((double)O22 - target22);
+
+				EofFit /= (double)0.5;
+
+				std::cout << "EofFit = " << EofFit << endl;
+				// calculate the error of fit (end)
+
+				// save data into log file (begin)
+				fprintf(savedata, "%s%lf\n", "EofFit = ", EofFit);
+				fprintf(savedata, "%s%lf\n", "O11 = ", O11);
+				fprintf(savedata, "%s%lf\n", "O12 = ", O12);
+				fprintf(savedata, "%s%lf\n", "O21 = ", O21);
+				fprintf(savedata, "%s%lf\n", "O22 = ", O22);
+				// save data into log file (end)
+
+				// adjust weigths (begin)
+				double derivativeTerm_X1;
+				double derivativeTerm_X2;
+				double derivativeTerm_X1_X2;
+
+				for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+					for (int i2 = 0; i2 < n1; i2++) { // y dim 
+
+						derivativeTerm_X1 = (double)0.0;
+						derivativeTerm_X2 = (double)0.0;
+						derivativeTerm_X1_X2 = (double)0.0;
+
+						derivativeTerm_X1 = ((double)O11 * ((double)1.0 - O11) * ((double)O11 - target11));
+							                
+						derivativeTerm_X1 *= (double)Network.pointer->X1[i1][i2];
+							
+
+						derivativeTerm_X2 = ((double)O21 * ((double)1.0 - O21) * ((double)O21 - target21));
+
+						derivativeTerm_X2 *= (double)Network.pointer->X2[i1][i2];
+
+						
+						derivativeTerm_X1_X2 = (double)derivativeTerm_X1 + (double)derivativeTerm_X2;
+
+
+						Network.pointer->Weights_1[i1][i2] += (  -(double)learningRate * (double)derivativeTerm_X1_X2);
+
+						Network.pointer->Weights_1[i1][i2] += (   (double)smoothingFactor *
+						                                          (double)Network.pointer->pWeights_1[i1][i2] );
+
+						Network.pointer->pWeights_1[i1][i2] = (double)Network.pointer->Weights_1[i1][i2];
+
+					}
+				}
+					
+				// adjust threshold logic unit
+				derivativeTerm_X1 = ((double)O11 * ((double)1.0 - O11) * ((double)O11 - target11));
+
+				derivativeTerm_X1 *= (double)1.0;
+
+
+				derivativeTerm_X2 = ((double)O21 * ((double)1.0 - O21) * ((double)O21 - target21));
+
+				derivativeTerm_X2 *= (double)1.0;
+
+				
+				derivativeTerm_X1_X2 = (double)derivativeTerm_X1 + (double)derivativeTerm_X2;
+
+
+				b1 += (-(double)learningRate * derivativeTerm_X1_X2);
+
+				b1 += ( (double)smoothingFactor * pb1);
+
+				pb1 = (double)b1;
+
+			
+				for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+					for (int i2 = 0; i2 < n1; i2++) { // y dim 
+
+						derivativeTerm_X1 = (double)0.0;
+						derivativeTerm_X2 = (double)0.0;
+						derivativeTerm_X1_X2 = (double)0.0;
+
+						derivativeTerm_X1 = ((double)O12 * ((double)1.0 - O12) * ((double)O12 - target12));
+							                
+						derivativeTerm_X1 *= (double)Network.pointer->X1[i1][i2];
+							
+
+						derivativeTerm_X2 = ((double)O22 * ((double)1.0 - O22) * ((double)O22 - target22));
+
+						derivativeTerm_X2 *= (double)Network.pointer->X2[i1][i2];
+
+
+						derivativeTerm_X1_X2 = (double)derivativeTerm_X1 + (double)derivativeTerm_X2;
+
+						Network.pointer->Weights_2[i1][i2] += (  -(double)learningRate * (double)derivativeTerm_X1_X2 );
+
+						Network.pointer->Weights_2[i1][i2] += (   (double)smoothingFactor *
+															      (double)Network.pointer->pWeights_2[i1][i2] );
+
+						Network.pointer->pWeights_2[i1][i2] = (double)Network.pointer->Weights_2[i1][i2];
+					}
+				}
+				
+				// adjust threshold logic unit
+				derivativeTerm_X1 = ((double)O12 * ((double)1.0 - O12) * ((double)O12 - target12));
+
+				derivativeTerm_X1 *= (double)1.0;
+
+
+				derivativeTerm_X2 = ((double)O22 * ((double)1.0 - O22) * ((double)O22 - target22));
+
+				derivativeTerm_X2 *= (double)1.0;
+
+
+				derivativeTerm_X1_X2 = (double)derivativeTerm_X1 + (double)derivativeTerm_X2;
+
+				b2 += (-(double)learningRate * derivativeTerm_X1_X2);
+
+				b2 += ( (double)smoothingFactor * pb2);
+
+				pb2 = (double)b2;
+				// adjust weigths (end)
+			}
+			// learning process (end)
+
+
+			// convolve images (begin)
+			max = Network.pointer->Weights_1[0][0];
+			min = Network.pointer->Weights_1[0][0];
+
+			/// compute max and min of data (begin)
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim
+
+					if (Network.pointer->Weights_1[i1][i2] > (double)max)
+
+						max = (double)Network.pointer->Weights_1[i1][i2];
+
+					if (Network.pointer->Weights_1[i1][i2] < (double)min)
+
+						min = (double)Network.pointer->Weights_1[i1][i2];
+
+
+				} // y dim
+
+			}  // x dim
+			/// compute max and min of data (end)
+
+			// scale (begin)
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim  
+
+					if (max == min) Network.pointer->Weights_1[i1][i2] = (double)0.0;
+
+					else  Network.pointer->Weights_1[i1][i2] = (double)(min - Network.pointer->Weights_1[i1][i2]) / (min - max);
+
+				} // y dim
+
+			}  // x dim 
+			// scale (end)
+
+
+			max = Network.pointer->Weights_2[0][0];
+			min = Network.pointer->Weights_2[0][0];
+
+			/// compute max and min of data (begin)
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim
+
+					if (Network.pointer->Weights_2[i1][i2] > (double)max)
+
+						max = (double)Network.pointer->Weights_2[i1][i2];
+
+					if (Network.pointer->Weights_2[i1][i2] < (double)min)
+
+						min = (double)Network.pointer->Weights_2[i1][i2];
+
+
+				} // y dim
+
+			}  // x dim
+			/// compute max and min of data (end)
+
+			// scale (begin)
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim  
+
+					if (max == min) Network.pointer->Weights_2[i1][i2] = (double)0.0;
+
+					else  Network.pointer->Weights_2[i1][i2] = (double)(min - Network.pointer->Weights_2[i1][i2]) / (min - max);
+
+				} // y dim
+
+			}  // x dim 
+			// scale (end)
+
+
+
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim 
+
+					// adjust contrast
+					Network.pointer->X1_convolved_1[i1][i2] = (double)Network.pointer->X1_original[i1][i2] *
+						                                      (double)Network.pointer->Weights_1[i1][i2];
+
+					// adjust brightness 
+					Network.pointer->X1_convolved_1[i1][i2] -= (double)b1;
+				}
+			}
+
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim 
+
+					// adjust contrast
+					Network.pointer->X2_convolved_1[i1][i2] = (double)Network.pointer->X2_original[i1][i2] *
+						                                      (double)Network.pointer->Weights_1[i1][i2];
+
+					// adjust brightness 
+					Network.pointer->X2_convolved_1[i1][i2] -= (double)b1;
+				}
+			}
+
+
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim 
+
+					// adjust contrast
+					Network.pointer->X1_convolved_2[i1][i2] = (double)Network.pointer->X1_original[i1][i2] *
+						                                      (double)Network.pointer->Weights_2[i1][i2];
+
+					// adjust brightness 
+					Network.pointer->X1_convolved_2[i1][i2] -= (double)b2;
+				}
+			}
+
+			for (int i1 = 0; i1 < n2; i1++) {// x dim
+
+				for (int i2 = 0; i2 < n1; i2++) { // y dim 
+
+					// adjust contrast
+					Network.pointer->X2_convolved_2[i1][i2] = (double)Network.pointer->X2_original[i1][i2] *
+						                                      (double)Network.pointer->Weights_2[i1][i2];
+
+					// adjust brightness 
+					Network.pointer->X2_convolved_2[i1][i2] -= (double)b2;
+				}
+			}
+			// convolve images (end)
+
+			Network.save();
+
+			std::cout << "End of Computation..." << endl;
+			std::cout << endl;
+
+			fprintf(savedata, "%s\n", "End of Computation...");
+			fprintf(savedata, "\n");
+
+			fclose(savedata);
+
+			delete Network.pointer;
+			Network.~net2024();
+		} // processing (end)
+
+	} // run the program (end)
+
+
+	return 0;
+} // end of main 
