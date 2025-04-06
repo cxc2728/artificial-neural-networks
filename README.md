@@ -9,3 +9,5 @@ net2024 181x181_1.img 181x181_2.img 181 181 0.001 750 0.0055
 
 net2024 181x181_2.img 181x181_1.img 181 181 0.001 750 0.0055
 
+more command lines are located in the zipped folder
+
