@@ -267,11 +267,11 @@ int main(int argc, char* argv[]) {
 				h21 = h21 + b1;
 				h22 = h22 + b2;
 
-				O21 = (double)1.0 / ((double)1.0 + (double)exp(-(double)h21));
-				O22 = (double)1.0 / ((double)1.0 + (double)exp(-(double)h22));
+				H21 = (double)1.0 / ((double)1.0 + (double)exp(-(double)h21));
+				H22 = (double)1.0 / ((double)1.0 + (double)exp(-(double)h22));
 
 
-				if ((_isnan((double)O21)) == 0) {}
+				if ((_isnan((double)H21)) == 0) {}
 				else {
 
 					std::cout << "Please run again the program using less number of iterations " << endl;
@@ -279,7 +279,7 @@ int main(int argc, char* argv[]) {
 
 				}
 
-				if ((_isnan((double)O22)) == 0) {}
+				if ((_isnan((double)H22)) == 0) {}
 				else {
 
 					std::cout << "Please run again the program using less number of iterations " << endl;
@@ -339,7 +339,7 @@ int main(int argc, char* argv[]) {
 					     ((double)O12 - target12) * ((double)O12 - target12) +
 					     ((double)O22 - target22) * ((double)O22 - target22);
 
-				EofFit /= (double)0.5;
+				EofFit /= (double)2.0;
 
 				std::cout << "EofFit = " << EofFit << endl;
 				// calculate the error of fit (end)
@@ -366,12 +366,12 @@ int main(int argc, char* argv[]) {
 
 						derivativeTerm_X1 = ((double)O11 * ((double)1.0 - O11) * ((double)O11 - target11));
 
-						derivativeTerm_X1 *= (double)i11;
+						derivativeTerm_X1 *= (double)H11;
 
 		
 						derivativeTerm_X2 = ((double)O21 * ((double)1.0 - O21) * ((double)O21 - target21));
-
-						derivativeTerm_X2 *= (double)i21;
+						
+						derivativeTerm_X2 *= (double)H21;
 
 
 						derivativeTerm_X1_X2 = (double)derivativeTerm_X1 + (double)derivativeTerm_X2;
@@ -398,12 +398,12 @@ int main(int argc, char* argv[]) {
 
 						derivativeTerm_X1 = ((double)O11 * ((double)1.0 - O11) * ((double)O11 - target11));
 
-						derivativeTerm_X1 *= (double)i12;
+						derivativeTerm_X1 *= (double)H12;
 
 
 						derivativeTerm_X2 = ((double)O21 * ((double)1.0 - O21) * ((double)O21 - target21));
 
-						derivativeTerm_X2 *= (double)i22;
+						derivativeTerm_X2 *= (double)H22;
 
 
 						derivativeTerm_X1_X2 = (double)derivativeTerm_X1 + (double)derivativeTerm_X2;
@@ -430,12 +430,12 @@ int main(int argc, char* argv[]) {
 
 						derivativeTerm_X1 = ((double)O12 * ((double)1.0 - O12) * ((double)O12 - target12));
 
-						derivativeTerm_X1 *= (double)i11;
+						derivativeTerm_X1 *= (double)H11;
 
 
 						derivativeTerm_X2 = ((double)O22 * ((double)1.0 - O22) * ((double)O22 - target22));
 
-						derivativeTerm_X2 *= (double)i21;
+						derivativeTerm_X2 *= (double)H21;
 
 
 						derivativeTerm_X1_X2 = (double)derivativeTerm_X1 + (double)derivativeTerm_X2;
@@ -461,12 +461,12 @@ int main(int argc, char* argv[]) {
 
 						derivativeTerm_X1 = ((double)O12 * ((double)1.0 - O12) * ((double)O12 - target12));
 
-						derivativeTerm_X1 *= (double)i12;
+						derivativeTerm_X1 *= (double)H12;
 
 
 						derivativeTerm_X2 = ((double)O22 * ((double)1.0 - O22) * ((double)O22 - target22));
 
-						derivativeTerm_X2 *= (double)i22;
+						derivativeTerm_X2 *= (double)H22;
 
 
 						derivativeTerm_X1_X2 = (double)derivativeTerm_X1 + (double)derivativeTerm_X2;
@@ -550,14 +550,14 @@ int main(int argc, char* argv[]) {
 						double deEtotal_o2 = (double)0.0;
 
         				// w1 -
-						deEtotal_o1 = (((double)O11 - target11) * O11 * (1.0 - O11) * w5 * H11 * (1.0 - H11) * (double)i11) + 
+						deEtotal_o1 = (((double)O11 - target11) * O11 * (1.0 - O11) * w5 * H11 * (1.0 - H11) * (double)i11) + //
                         // -
-							          (((double)O12 - target12) * O12 * (1.0 - O12) * w7 * H11 * (1.0 - H11) * (double)i11);
+							          (((double)O12 - target12) * O12 * (1.0 - O12) * w7 * H11 * (1.0 - H11) * (double)i11); //
 													   
 						// w1 -
-						deEtotal_o2 = (((double)O21 - target21) * O21 * (1.0 - O21) * w5 * H21 * (1.0 - H21) *(double)i21) + 
+						deEtotal_o2 = (((double)O21 - target21) * O21 * (1.0 - O21) * w5 * H21 * (1.0 - H21) *(double)i21) + //
 						// -	
-							          (((double)O22 - target22) * O22 * (1.0 - O22) * w7 * H21 * (1.0 - H21) * (double)i21);
+							          (((double)O22 - target22) * O22 * (1.0 - O22) * w7 * H21 * (1.0 - H21) * (double)i21); //
 
 						// calculation of the delta rule
 						w1 += -(double)learningRate * ((double)deEtotal_o1 + deEtotal_o2);
@@ -574,14 +574,14 @@ int main(int argc, char* argv[]) {
 						} 
 
 						// w2 -
-						deEtotal_o1 = (((double)O11 - target11) * O11 * (1.0 - O11) * w5 * H11 * (1.0 - H11) * (double)i12) + 
+						deEtotal_o1 = (((double)O11 - target11) * O11 * (1.0 - O11) * w5 * H11 * (1.0 - H11) * (double)i12) + //
 						// - 
-							          (((double)O22 - target22) * O22 * (1.0 - O22) * w7 * H21 * (1.0 - H21) * (double)i22);
+							          (((double)O22 - target22) * O22 * (1.0 - O22) * w7 * H21 * (1.0 - H21) * (double)i22); //
 													   
 						// w2 -							  
-						deEtotal_o2 = (((double)O12 - target12) * O12 * (1.0 - O12) * w7 * H11 * (1.0 - H11) * (double)i12) + 
+						deEtotal_o2 = (((double)O12 - target12) * O12 * (1.0 - O12) * w7 * H11 * (1.0 - H11) * (double)i12) + //
 						// -
-							          (((double)O21 - target21) * O21 * (1.0 - O21) * w5 * H21 * (1.0 - H21) * (double)i22);
+							          (((double)O21 - target21) * O21 * (1.0 - O21) * w5 * H21 * (1.0 - H21) * (double)i22); //
 
 					    // calculation of the delta rule
 						w2 += -(double)learningRate * ((double)deEtotal_o1 + deEtotal_o2);
@@ -599,16 +599,16 @@ int main(int argc, char* argv[]) {
 						}  
 
 						// w3 -
-						deEtotal_o1 = (((double)O12 - target12) * O12 * (1.0 - O12) * w8 * H12 * (1.0 - H12) * (double)i11)  +
+						deEtotal_o1 = (((double)O12 - target12) * O12 * (1.0 - O12) * w8 * H12 * (1.0 - H12) * (double)i11)  + //
 						// -	
-							          (((double)O22 - target22) * O22 * (1.0 - O22) * w8 * H22 * (1.0 - H22) * (double)i21);
+							          (((double)O22 - target22) * O22 * (1.0 - O22) * w8 * H22 * (1.0 - H22) * (double)i21); //
 													   
 
 						//							  
-						deEtotal_o2 = (((double)O21 - target21) * O21 * (1.0 - O21) * w6 * H22 * (1.0 - H22) * (double)i21) +
+						deEtotal_o2 = (((double)O21 - target21) * O21 * (1.0 - O21) * w6 * H22 * (1.0 - H22) * (double)i21) + //
 						
 						// - 
-						  	          (((double)O11 - target11) * O11 * (1.0 - O11) * w6 * H12 * (1.0 - H12) * (double)i11);
+						  	          (((double)O11 - target11) * O11 * (1.0 - O11) * w6 * H12 * (1.0 - H12) * (double)i11); //
 
 						// calculation of the delta rule
 						w3 += -(double)learningRate * ((double)deEtotal_o1 + deEtotal_o2);
@@ -626,14 +626,14 @@ int main(int argc, char* argv[]) {
 						} 
 
 						// w4 - 
-						deEtotal_o1 = (((double)O12 - target12) * O12 * (1.0 - O12) * w8 * H12 * (1.0 - H12) * (double)i12) + 
+						deEtotal_o1 = (((double)O12 - target12) * O12 * (1.0 - O12) * w8 * H12 * (1.0 - H12) * (double)i12) + //
 						// -	          
-							          (((double)O22 - target22) * O22 * (1.0 - O22) *  w8 * H22 * (1.0 - H22) * (double)i22);
+							          (((double)O22 - target22) * O22 * (1.0 - O22) *  w8 * H22 * (1.0 - H22) * (double)i22); //
 
 						
-						deEtotal_o2 = (((double)O21 - target21) * O21 * (1.0 - O21) * w6 * H12 * (1.0 - H22) * (double)i22) +
+						deEtotal_o2 = (((double)O21 - target21) * O21 * (1.0 - O21) * w6 * H22 * (1.0 - H22) * (double)i22) + //
                         // -
-							          (((double)O11 - target11) * O11 * (1.0 - O11) * w6 * H12 * (1.0 - H12) * (double)i12);
+							          (((double)O11 - target11) * O11 * (1.0 - O11) * w6 * H12 * (1.0 - H12) * (double)i12); //
 
 						// calculation of the delta rule
 						w4 += -(double)learningRate * ((double)deEtotal_o1 + deEtotal_o2);
@@ -652,15 +652,15 @@ int main(int argc, char* argv[]) {
 
 						// calculation of the chain rule b1
 						// -
-						deEtotal_o1 = (((double)O11 - target11) * O11 * (1.0 - O11) * w5 * H11 * (1.0 - H11) * (double)1.0) +
+						deEtotal_o1 = (((double)O11 - target11) * O11 * (1.0 - O11) * w5 * H11 * (1.0 - H11) * (double)1.0) + //
 						// -	       
-							          (((double)O21 - target21) * O21 * (1.0 - O21) * w5 * H21 * (1.0 - H21) * (double)1.0);
+							          (((double)O21 - target21) * O21 * (1.0 - O21) * w5 * H21 * (1.0 - H21) * (double)1.0); //
 				
 						// calculation of the delta rule
 						// -
-						deEtotal_o2 = (((double)O12 - target12) * O12 * (1.0 - O12) * w7 * H11 * (1.0 - H11) * (double)1.0) +
+						deEtotal_o2 = (((double)O12 - target12) * O12 * (1.0 - O12) * w7 * H11 * (1.0 - H11) * (double)1.0) + //
                         // -
-						              (((double)O22 - target22) * O22 * (1.0 - O22) * w7 * H21 * (1.0 - H21) * (double)1.0);
+						              (((double)O22 - target22) * O22 * (1.0 - O22) * w7 * H21 * (1.0 - H21) * (double)1.0); //
 
 
 						b1 += -(double)learningRate * ((double)deEtotal_o1 + deEtotal_o2);
@@ -679,14 +679,14 @@ int main(int argc, char* argv[]) {
 
 						// calculation of the chain rule b2
 						//// -
-						deEtotal_o1 = (((double)O11 - target11) * O11 * (1.0 - O11) * w6 * H12 * (1.0 - H12) * (double)1.0) +
+						deEtotal_o1 = (((double)O11 - target11) * O11 * (1.0 - O11) * w6 * H12 * (1.0 - H12) * (double)1.0) + //
                         //// -
-							          (((double)O21 - target21) * O21 * (1.0 - O21) * w6 * H22 * (1.0 - H22) * (double)1.0);
+							          (((double)O21 - target21) * O21 * (1.0 - O21) * w6 * H22 * (1.0 - H22) * (double)1.0); //
 					
 
-						deEtotal_o2 = (((double)O12 - target12) * O12 * (1.0 - O12) * w8 * H11 * (1.0 - H11) * (double)1.0) +
+						deEtotal_o2 = (((double)O12 - target12) * O12 * (1.0 - O12) * w8 * H12 * (1.0 - H12) * (double)1.0) + //
                         //// - 
-							          (((double)O22 - target22) * O22 * (1.0 - O22) * w8 * H22 * (1.0 - H22) * (double)1.0);
+							          (((double)O22 - target22) * O22 * (1.0 - O22) * w8 * H22 * (1.0 - H22) * (double)1.0); // 
 
                        // calculation of the delta rule
 						b2 += -(double)learningRate * ((double)deEtotal_o1 + deEtotal_o2);
@@ -725,6 +725,9 @@ int main(int argc, char* argv[]) {
 			fwrite(&w2, sizeof(double), 1, saveWeights);
 			fwrite(&w3, sizeof(double), 1, saveWeights);
 			fwrite(&w4, sizeof(double), 1, saveWeights);
+			fwrite(&b3, sizeof(double), 1, saveWeights);
+			fwrite(&b4, sizeof(double), 1, saveWeights);
+
 	
 		fclose(saveWeights);
 
@@ -745,6 +748,9 @@ int main(int argc, char* argv[]) {
 			fwrite(&w6, sizeof(double), 1, saveWeights);
 			fwrite(&w7, sizeof(double), 1, saveWeights);
 			fwrite(&w8, sizeof(double), 1, saveWeights);
+			fwrite(&b1, sizeof(double), 1, saveWeights);
+			fwrite(&b2, sizeof(double), 1, saveWeights);
+
 
 		fclose(saveWeights);
 
