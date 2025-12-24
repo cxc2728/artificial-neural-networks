@@ -1,0 +1,202 @@
+#define _CRT_SECURE_NO_WARNINGS
+
+//  Project Title: 2x2 Neural Network Calculator
+
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <io.h>
+#include <dos.h>
+#include <conio.h>
+#include <stdlib.h>
+#include <sstream>
+#include <stdio.h>
+#include <iomanip>
+#include <istream>
+#include <math.h>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+int main(int argc, char* argv[]) {
+
+	char outputFile[128] = "testnet2025v2.log";
+
+	FILE* savedata;
+
+	if (argc < 3) {
+		std::cout << endl;
+		std::cout << "Please type the image file name - Class 1: Make sure it is a 2x1 file" << endl;
+		std::cout << "Please type the image file name - Class 2: Make sure it is a 2x1 file" << endl;
+		std::cout << "Please make sure that the Data format is 'double': 64 bits real" << endl;
+		std::cout << endl;
+		exit(0);
+	}
+
+	else { // run the program (begin)
+
+
+		if ((savedata = fopen(outputFile, "w")) == NULL)
+		{
+
+			std::cout << "Cannot open output file, Now Exit..." << endl;
+			exit(0);
+
+		}
+		else { // processing (begin)
+
+			int n1 = 2;
+			int n2 = 2;
+
+			char fileNameX1[328];
+			char fileNameX2[328];
+
+			sprintf(fileNameX1, "%s", argv[1]);
+			sprintf(fileNameX2, "%s", argv[2]);
+
+
+			std::cout << endl;
+			std::cout << "The File name of Class 1 is: " << fileNameX1 << endl;
+			std::cout << "The File name of Class 2 is: " << fileNameX2 << endl;
+			
+			fprintf(savedata, "%s%s\n", "The File name of Class 1 is: ", fileNameX1);
+			fprintf(savedata, "%s%s\n", "TThe File name of Class 2 is: ", fileNameX2);
+			
+
+			double i11 = 0.0, i12 = 0.0, i21 = 0.0, i22 = 0.0;
+
+			/// read image file (begin)
+			FILE* pf;
+
+			if ((pf = fopen(fileNameX1, "rb+")) == NULL)
+			{
+
+				std::cout << "Cannot open file: " << fileNameX1 << endl;
+				fprintf(savedata, "%s%s\n", "Cannot open file: ", fileNameX1);
+
+				exit(0);
+
+			}
+			else { // else
+
+				fread(&i11, sizeof(double), 1, pf);
+				fread(&i12, sizeof(double), 1, pf);
+
+				fclose(pf);
+
+
+			} // else 
+			/// read file (end)
+
+			if ((pf = fopen(fileNameX2, "rb+")) == NULL)
+			{
+
+				std::cout << "Cannot open file: " << fileNameX2 << endl;
+				fprintf(savedata, "%s%s\n", "Cannot open file: ", fileNameX2);
+
+				exit(0);
+
+			}
+			else { // else
+
+				fread(&i21, sizeof(double), 1, pf);
+				fread(&i22, sizeof(double), 1, pf);
+
+				fclose(pf);
+
+			} // else 
+			/// read file (end)
+
+			double w1 = 0.0, w2 = 0.0, w3 = 0.0, w4 = 0.0, b1 = 0.0, b2 = 0.0;
+
+			if ((pf = fopen("Weights.img", "rb+")) == NULL)
+			{
+
+				std::cout << "Cannot open file: " << "Weights.img" << endl;
+				fprintf(savedata, "%s%s\n", "Cannot open file: ", "Weights.img");
+
+				exit(0);
+
+			}
+			else { // else
+
+				fread(&w1, sizeof(double), 1, pf);
+				fread(&w2, sizeof(double), 1, pf);
+				fread(&w3, sizeof(double), 1, pf);
+				fread(&w4, sizeof(double), 1, pf);
+				fread(&b1, sizeof(double), 1, pf);
+				fread(&b2, sizeof(double), 1, pf);
+
+				fclose(pf);
+
+
+			} // else 
+			/// read file (end)
+			std::cout << "Data loaded" << endl;
+
+		
+			// initialize to zeros
+			double O11 = 0.0, O12 = 0.0;
+			double O21 = 0.0, O22 = 0.0;
+
+				// compute the Network input-output - Image 1 - (begin)
+				double net11 = (double)0.0;
+				double net12 = (double)0.0;
+
+
+				net11 = (double)i11 * (double)w1 + (double)i12 * (double)w2;
+
+				net12 = (double)i11 * (double)w3 + (double)i12 * (double)w4;
+
+
+				net11 = net11 + b1;
+				net12 = net12 + b2;
+
+				O11 = (double)1.0 / ((double)1.0 + (double)exp(-(double)net11));
+				O12 = (double)1.0 / ((double)1.0 + (double)exp(-(double)net12));
+
+				// compute the Network input-output - Image 2 - (begin)
+				double net21 = (double)0.0;
+				double net22 = (double)0.0;
+
+				net21 = (double)i21 * (double)w1 + (double)i22 * (double)w2;
+
+				net22 = (double)i21 * (double)w3 + (double)i22 * (double)w4;
+
+				net21 = net21 + b1;
+				net22 = net22 + b2;
+
+				O21 = (double)1.0 / ((double)1.0 + (double)exp(-(double)net21));
+				O22 = (double)1.0 / ((double)1.0 + (double)exp(-(double)net22));
+
+				
+				// compute the Network output (begin)		
+				std::cout << "O11 = " << O11 << endl;
+				std::cout << "O21 = " << O21 << endl;
+				std::cout << "O12 = " << O12 << endl;
+				std::cout << "O22 = " << O22 << endl;
+				// compute the Network output (end)
+
+			
+				// save data into log file (begin)
+				fprintf(savedata, "%s%lf\n", "O11 = ", O11);
+				fprintf(savedata, "%s%lf\n", "O21 = ", O21);
+				fprintf(savedata, "%s%lf\n", "O12 = ", O12);
+				fprintf(savedata, "%s%lf\n", "O22 = ", O22);
+				// save data into log file (end)
+
+			std::cout << "End of Computation..." << endl;
+			std::cout << endl;
+
+			fprintf(savedata, "%s\n", "End of Computation...");
+			fprintf(savedata, "\n");
+
+			fclose(savedata);
+
+		} // processing (ends)
+
+	} // run the program (end)
+
+	return 0;
+} // end of main 
