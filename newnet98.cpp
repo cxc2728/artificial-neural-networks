@@ -1,5 +1,5 @@
 	   #define _CRT_SECURE_NO_WARNINGS
-       // Three Layer Perceptron with Growing Architecture
+       // Three Layer Perceptron with Growing Architecture (Competitive Method)
        #include <stdio.h>
        #include <string.h>
        #include <dos.h>
