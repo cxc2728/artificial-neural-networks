@@ -1,6 +1,6 @@
 #define _CRT_SECURE_NO_WARNINGS
 
-//  Project Title: 2x2 Neural Network Calculator
+//  Project Title: 2x2 Neural Network Tester
 
 #include <iostream>
 #include <fstream>
