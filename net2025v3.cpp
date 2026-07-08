@@ -725,8 +725,8 @@ int main(int argc, char* argv[]) {
 			fwrite(&w2, sizeof(double), 1, saveWeights);
 			fwrite(&w3, sizeof(double), 1, saveWeights);
 			fwrite(&w4, sizeof(double), 1, saveWeights);
-			fwrite(&b3, sizeof(double), 1, saveWeights);
-			fwrite(&b4, sizeof(double), 1, saveWeights);
+			fwrite(&b1, sizeof(double), 1, saveWeights);
+			fwrite(&b2, sizeof(double), 1, saveWeights);
 
 	
 		fclose(saveWeights);
@@ -748,8 +748,8 @@ int main(int argc, char* argv[]) {
 			fwrite(&w6, sizeof(double), 1, saveWeights);
 			fwrite(&w7, sizeof(double), 1, saveWeights);
 			fwrite(&w8, sizeof(double), 1, saveWeights);
-			fwrite(&b1, sizeof(double), 1, saveWeights);
-			fwrite(&b2, sizeof(double), 1, saveWeights);
+			fwrite(&b3, sizeof(double), 1, saveWeights);
+			fwrite(&b4, sizeof(double), 1, saveWeights);
 
 
 		fclose(saveWeights);
