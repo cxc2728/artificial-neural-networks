@@ -1,5 +1,5 @@
 #define _CRT_SECURE_NO_WARNINGS
-// Three-Layer Perceptron Tester
+
        #include <stdio.h>
       
        #include <string.h>
@@ -151,16 +151,6 @@
 
 	 fprintf(stream,"%s  \n",goulp);
 
-	 // 2025
-	 FILE * dimensionHID;
-	 if ((dimensionHID = fopen("DimensionHID.txt","w"))==NULL)
-	 {
-
-	 printf("WARNING CANNOT OPEN DimensionHID FILE\n");
-	 exit(0);
-
-	 } else { }
-	 // 2025
 
      t=0;
 	     do{
@@ -176,18 +166,6 @@
 	 pattern = pattern_normaliser(filename,lower,upper,(set.INP) );
 
 	 hidden_activator = output_nodes_producer(input_layer,pattern,(set.HID), (set.INP));
-
-	 // 2025
-	 fprintf(dimensionHID,"%s\t",name);
-
-	 for (int d = 1; d <=set.HID; d++) {
-
-		fprintf(dimensionHID,"%lf\t", *(hidden_activator+d));
-
-
-	 }
-	 fprintf(dimensionHID,"\n");
-	 // 2025
 
      output_activator = output_nodes_producer(hidden_layer,hidden_activator, (set.OUT_T),(set.HID));
 
@@ -264,10 +242,6 @@
      fclose(stream);
      printf("\n");
      printf("CLASSIFICATIONS CORRECTLY SAVED ON FILE \n");
-
-	 // 2025
-	 fclose(dimensionHID);
-	 // 2025
 
 	 // 2024
 	 char enterKey = ' ';
