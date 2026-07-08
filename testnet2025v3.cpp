@@ -130,8 +130,8 @@ int main(int argc, char* argv[]) {
 				fread(&w2, sizeof(double), 1, pf);
 				fread(&w3, sizeof(double), 1, pf);
 				fread(&w4, sizeof(double), 1, pf);
-				fread(&b3, sizeof(double), 1, pf);
-				fread(&b4, sizeof(double), 1, pf);
+				fread(&b1, sizeof(double), 1, pf);
+				fread(&b2, sizeof(double), 1, pf);
 
 				fclose(pf);
 
@@ -154,8 +154,8 @@ int main(int argc, char* argv[]) {
 				fread(&w6, sizeof(double), 1, pf);
 				fread(&w7, sizeof(double), 1, pf);
 				fread(&w8, sizeof(double), 1, pf);
-				fread(&b1, sizeof(double), 1, pf);
-				fread(&b2, sizeof(double), 1, pf);
+				fread(&b3, sizeof(double), 1, pf);
+				fread(&b4, sizeof(double), 1, pf);
 
 				fclose(pf);
 
